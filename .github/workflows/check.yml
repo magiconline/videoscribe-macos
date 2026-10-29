@@ -1,0 +1,15 @@
+name: Source checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  swift:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Swift unit tests (media and network fixtures are opt-in)
+        run: swift test
+      - name: Privacy scan
+        run: python3 scripts/privacy-scan.py
+      - name: Release compile
+        run: swift build -c release
