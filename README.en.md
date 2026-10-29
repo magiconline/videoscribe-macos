@@ -20,7 +20,7 @@ Download the application ZIP from Releases, extract it and place `VideoScribe.ap
 ```sh
 swift test
 ./scripts/build-app.sh
-open dist/VideoScribe.app
+open dist.noindex/VideoScribe.app
 ```
 
 The source deployment target is macOS 14; release binaries are for Apple Silicon and have only been tested on the build machine. Intel and other OS versions are not verified. The app is ad-hoc signed, not Apple-notarized.

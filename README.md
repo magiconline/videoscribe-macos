@@ -39,10 +39,10 @@ git clone https://github.com/magiconline/videoscribe-macos.git
 cd videoscribe-macos
 swift test
 ./scripts/build-app.sh
-open dist/VideoScribe.app
+open dist.noindex/VideoScribe.app
 ```
 
-也可以直接在 Xcode 打开 `Package.swift`。`build-app.sh` 会映射构建路径、去除调试符号并执行临时签名，产物位于 `dist/VideoScribe.app`；不会复制本机 Homebrew 库、模型或个人配置。
+也可以直接在 Xcode 打开 `Package.swift`。`build-app.sh` 会映射构建路径、去除调试符号并执行临时签名，产物位于 `dist.noindex/VideoScribe.app`；不会复制本机 Homebrew 库、模型或个人配置。开发输出放在 `.noindex` 目录，避免被应用搜索当成重复安装；正式使用请把应用放入 `/Applications`。
 
 ## 基本操作
 

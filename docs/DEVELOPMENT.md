@@ -13,7 +13,7 @@ English speech is generated with macOS `say` if its requested voice is installed
 
 For a user-selected network test, set `VIDEOSCRIBE_TEST_URL` and `VIDEOSCRIBE_TEST_ROOT`. For a local HTTP video test, set `VIDEOSCRIBE_TEST_VIDEO_URL`. For actual system-proxy verification, set `VIDEOSCRIBE_EXPECTED_PROXY` to your current proxy URL; the repository contains no live proxy endpoint.
 
-Build a minimal distributable with `scripts/build-app.sh`. Build artifacts are ignored. Do not copy the development workspace, user data store, account configuration or Homebrew installation into a release. Verify signing with `codesign --verify --deep --strict dist/VideoScribe.app`.
+Build a minimal distributable with `scripts/build-app.sh`. Build artifacts are ignored. Do not copy the development workspace, user data store, account configuration or Homebrew installation into a release. Verify signing with `codesign --verify --deep --strict dist.noindex/VideoScribe.app`.
 
 Before publishing:
 
