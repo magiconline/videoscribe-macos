@@ -7,6 +7,7 @@ import SwiftUI
         WindowGroup {
             ContentView().environmentObject(workspace).frame(minWidth: 980, minHeight: 680)
         }.defaultSize(width: 1180, height: 790)
+        .windowToolbarStyle(.unifiedCompact)
         .commands { CommandGroup(replacing: .newItem) { Button("导入视频或音频…") { workspace.importMedia() }.keyboardShortcut("o") } }
         Settings { SettingsView().environmentObject(workspace) }
     }
@@ -28,7 +29,7 @@ struct ContentView: View {
                     }
                 }.listStyle(.sidebar)
                 Divider()
-                Button { NSWorkspace.shared.open(w.root) } label: { Label("打开工作目录", systemImage: "folder") }.buttonStyle(.plain).padding(18)
+                Button { NSWorkspace.shared.open(w.root) } label: { Label("打开工作目录", systemImage: "folder") }.buttonStyle(.plain).padding(.horizontal, 18).frame(height: 44)
             }.navigationSplitViewColumnWidth(min: 210, ideal: 245, max: 320)
         } detail: {
             VStack(spacing: 0) {
@@ -50,7 +51,7 @@ struct ContentView: View {
                     Text(w.status).font(.callout).lineLimit(1)
                     Spacer()
                     Button(showLog ? "收起日志" : "处理日志") { showLog.toggle() }.buttonStyle(.plain).foregroundStyle(.secondary)
-                }.padding(.horizontal, 22).padding(.vertical, 12)
+                }.padding(.horizontal, 24).frame(height: 44)
                 if showLog { ScrollView { Text(w.log.isEmpty ? "开始处理后在这里查看详细日志。" : w.log).font(.system(.caption, design: .monospaced)).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).padding(14) }.frame(height: 145).background(Color(nsColor: .textBackgroundColor)) }
             }
         }
@@ -69,7 +70,10 @@ struct ContentView: View {
                 Spacer()
                 SettingsLink { Image(systemName: "gearshape").font(.title3) }.buttonStyle(.plain).help("模型与依赖设置")
             }
-            Picker("素材来源", selection: $w.sourceMode) { Text("视频网址").tag(0); Text("本地文件").tag(1) }.pickerStyle(.segmented).frame(width: 250).disabled(w.busy)
+            HStack(spacing: 8) {
+                Text("素材来源").frame(width: 60, alignment: .leading)
+                Picker("素材来源", selection: $w.sourceMode) { Text("视频网址").tag(0); Text("本地文件").tag(1) }.labelsHidden().pickerStyle(.segmented).frame(width: 190)
+            }.disabled(w.busy)
             HStack(spacing: 10) {
                 if w.sourceMode == 0 {
                     TextField("粘贴视频链接，例如 https://www.youtube.com/watch?v=…", text: $w.urlText).textFieldStyle(.roundedBorder).controlSize(.large).onSubmit { w.start() }.disabled(w.busy)
@@ -82,7 +86,10 @@ struct ContentView: View {
                 else { Button("生成文字稿") { w.start() }.buttonStyle(.borderedProminent).controlSize(.large).keyboardShortcut(.return, modifiers: .command) }
             }
             HStack(spacing: 18) {
-                Picker("原声语言", selection: $w.language) { Text("自动检测").tag("auto"); Text("中文").tag("zh"); Text("英文").tag("en") }.frame(width: 200)
+                HStack(spacing: 8) {
+                    Text("原声语言").frame(width: 60, alignment: .leading)
+                    Picker("原声语言", selection: $w.language) { Text("自动检测").tag("auto"); Text("中文").tag("zh"); Text("英文").tag("en") }.labelsHidden().frame(width: 146)
+                }
                 Toggle("强制本地转写", isOn: $w.forceASR).help("跳过现成字幕，重新识别音轨")
                 if w.sourceMode == 0 { Toggle("保留视频", isOn: $w.keepVideo).help("关闭后只按需下载音频，完成后清理音频") }
                 Spacer(minLength: 0)
@@ -104,17 +111,17 @@ struct ContentView: View {
                     Spacer()
                     TextField("搜索文字", text: $w.search).textFieldStyle(.roundedBorder).frame(width: 210)
                 }.font(.callout)
-            }.padding(22)
+            }.padding(24)
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     ForEach(item.segments.filter { w.search.isEmpty || $0.text.localizedCaseInsensitiveContains(w.search) }) { segment in
-                        HStack(alignment: .top, spacing: 18) {
+                        HStack(alignment: .firstTextBaseline, spacing: 18) {
                             if w.showTime {
-                                Text(Transcript.clock(segment.start)).font(.system(.caption, design: .monospaced)).foregroundStyle(.secondary).frame(width: 76, alignment: .leading).padding(.top, 4)
+                                Text(Transcript.clock(segment.start)).font(.system(.caption, design: .monospaced)).foregroundStyle(.secondary).frame(width: 76, alignment: .leading)
                             }
                             Text(segment.text).font(.system(size: 15)).lineSpacing(6).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
                         }.padding(.vertical, 13).padding(.horizontal, 24)
-                        Divider().padding(.leading, w.showTime ? 118 : 24)
+                        Divider().padding(.leading, w.showTime ? 118 : 24).padding(.trailing, 24)
                     }
                 }
             }.background(Color(nsColor: .textBackgroundColor))

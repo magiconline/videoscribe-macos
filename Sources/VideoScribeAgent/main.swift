@@ -67,7 +67,7 @@ func call(_ name: String, _ args: [String: Any], service: JobService) throws -> 
         return ["path":path.path,"bytes":try FileManager.default.attributesOfItem(atPath:path.path)[.size] ?? 0]
     case "get_capabilities":
         let available = ["yt-dlp","ffmpeg","ffprobe","whisper-cli","node"].map { name -> [String:Any] in ["name":name,"available":(try? ToolPaths.tool(name)) != nil] }
-        return ["version":"0.3.2","tools":available,"model_available":FileManager.default.isReadableFile(atPath:ToolPaths.defaultModel),"data_directory":service.root.path,"max_concurrent_jobs":2,"max_unfinished_jobs":16,"proxy_policy":"macOS system proxy resolved for each source URL; no silent direct fallback on proxy errors","worker_survives_mcp_disconnect":true]
+        return ["version":"0.3.3","tools":available,"model_available":FileManager.default.isReadableFile(atPath:ToolPaths.defaultModel),"data_directory":service.root.path,"max_concurrent_jobs":2,"max_unfinished_jobs":16,"proxy_policy":"macOS system proxy resolved for each source URL; no silent direct fallback on proxy errors","worker_survives_mcp_disconnect":true]
     default: throw ToolError(message:"Unknown tool")
     }
 }
@@ -84,7 +84,7 @@ func serve(service: JobService) {
             case "initialize":
                 initialized = true
                 let version = (message["params"] as? [String:Any])?["protocolVersion"] as? String ?? "2025-11-25"
-                result = ["protocolVersion":["2024-11-05","2025-03-26","2025-06-18","2025-11-25"].contains(version) ? version : "2025-11-25","capabilities":["tools":["listChanged":false]],"serverInfo":["name":"videoscribe","version":"0.3.2"],"instructions":"Submit returns queued, not completed. Poll durable job status; read transcript pages after completion. Workers persist independently of this transport."] as [String:Any]
+                result = ["protocolVersion":["2024-11-05","2025-03-26","2025-06-18","2025-11-25"].contains(version) ? version : "2025-11-25","capabilities":["tools":["listChanged":false]],"serverInfo":["name":"videoscribe","version":"0.3.3"],"instructions":"Submit returns queued, not completed. Poll durable job status; read transcript pages after completion. Workers persist independently of this transport."] as [String:Any]
             case "ping": result = [:] as [String:Any]
             case "tools/list":
                 guard initialized else { throw ToolError(message:"Initialize first") }
@@ -123,5 +123,5 @@ else if arguments.dropFirst().first == "call", let name = option("--tool") {
         FileHandle.standardOutput.write(try jsonData(call(name,input,service:service)) + Data([10]))
     } catch { FileHandle.standardError.write(Data((error.localizedDescription+"\n").utf8));exit(1) }
 } else {
-    FileHandle.standardError.write(Data("VideoScribeAgent 0.3.2\n  mcp [--data-dir PATH]\n  call --tool NAME [--arguments-file JSON] [--data-dir PATH]\n".utf8))
+    FileHandle.standardError.write(Data("VideoScribeAgent 0.3.3\n  mcp [--data-dir PATH]\n  call --tool NAME [--arguments-file JSON] [--data-dir PATH]\n".utf8))
 }

@@ -17,7 +17,7 @@ python3 - "$app" "$version" <<'PY'
 import plistlib,sys
 from pathlib import Path
 app=Path(sys.argv[1])
-info=dict(CFBundleExecutable='VideoScribe',CFBundleIdentifier='io.github.magiconline.videoscribe',CFBundleName='VideoScribe',CFBundleDisplayName='VideoScribe',CFBundlePackageType='APPL',CFBundleShortVersionString=sys.argv[2],CFBundleVersion='5',CFBundleIconFile='AppIcon',LSMinimumSystemVersion='14.0',NSHighResolutionCapable=True)
+info=dict(CFBundleExecutable='VideoScribe',CFBundleIdentifier='io.github.magiconline.videoscribe',CFBundleName='VideoScribe',CFBundleDisplayName='VideoScribe',CFBundlePackageType='APPL',CFBundleShortVersionString=sys.argv[2],CFBundleVersion='6',CFBundleIconFile='AppIcon',LSMinimumSystemVersion='14.0',NSHighResolutionCapable=True)
 (app/'Contents/Info.plist').write_bytes(plistlib.dumps(info))
 PY
 codesign --force --deep --sign - "$app"
